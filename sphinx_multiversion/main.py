@@ -401,6 +401,9 @@ def main(argv=None):
                 "sphinx",
                 *current_argv,
             )
+            print()
+            print(cmd)
+            print()
             current_cwd = os.path.join(data["basedir"], cwd_relative)
             subprocess.check_call(cmd, cwd=current_cwd)
 

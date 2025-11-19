@@ -363,6 +363,8 @@ def main(argv=None):
                 "sphinx",
                 *current_argv,
             )
+            print(json.dumps({"cmd": cmd}, indent=2))
+            return 0
             current_cwd = os.path.join(data["basedir"], cwd_relative)
             env = os.environ.copy()
             env.update(
@@ -401,9 +403,6 @@ def main(argv=None):
                 "sphinx",
                 *current_argv,
             )
-            print()
-            print(cmd)
-            print()
             current_cwd = os.path.join(data["basedir"], cwd_relative)
             subprocess.check_call(cmd, cwd=current_cwd)
 

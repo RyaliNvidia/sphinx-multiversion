@@ -145,19 +145,19 @@ def get_refs(
             )
             continue
 
-        missing_files = [
-            filename
-            for filename in files
-            if filename != "."
-            and not file_exists(gitroot, ref.refname, filename)
-        ]
-        if missing_files:
-            logger.debug(
-                "Skipping '%s' because it lacks required files: %r",
-                ref.refname,
-                missing_files,
-            )
-            continue
+        # missing_files = [
+        #     filename
+        #     for filename in files
+        #     if filename != "."
+        #     and not file_exists(gitroot, ref.refname, filename)
+        # ]
+        # if missing_files:
+        #     logger.debug(
+        #         "Skipping '%s' because it lacks required files: %r",
+        #         ref.refname,
+        #         missing_files,
+        #     )
+        #     continue
 
         yield ref
 
@@ -195,16 +195,23 @@ def no_fs_traversal(member: tarfile.TarInfo):
 
 def copy_tree(gitroot, src, dst, reference, sourcepath="."):
     with tempfile.SpooledTemporaryFile() as fp:
+        # cmd = (
+        #     "git",
+        #     "archive",
+        #     "--format",
+        #     "tar",
+        #     reference.commit,
+        #     "--",
+        #     sourcepath,
+        # )
         cmd = (
-            "git",
-            "archive",
-            "--format",
-            "tar",
+            "bash",
+            "archive.sh",
             reference.commit,
-            "--",
-            sourcepath,
+            fp,
         )
-        subprocess.check_call(cmd, cwd=gitroot, stdout=fp)
+        script_dir = os.path.dirname(os.path.abspath(__file__))
+        subprocess.check_call(cmd, cwd=script_dir, stdout=fp)
         fp.seek(0)
         with tarfile.TarFile(fileobj=fp) as tarfp:
             # This should be safe, but still causes a warning with medium

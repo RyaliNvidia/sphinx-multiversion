@@ -186,6 +186,11 @@ def main(argv=None):
         action="store_true",
         help="dump generated metadata and exit",
     )
+    parser.add_argument(
+        "--pre-eval-script",
+        dest="pre_eval_script",
+        help="optional bash script to run per git ref before file existence evaluation",
+    )
     args, argv = parser.parse_known_args(argv)
     if args.noconfig:
         return 1
@@ -262,6 +267,19 @@ def main(argv=None):
                     repopath,
                 )
                 continue
+            # Run optional pre-evaluation script in the extracted tree
+            if args.pre_eval_script:
+                try:
+                    subprocess.check_call(
+                        ("bash", args.pre_eval_script), cwd=repopath
+                    )
+                except (OSError, subprocess.CalledProcessError):
+                    logger.error(
+                        "Pre-evaluation script failed for %s in %s",
+                        gitref.refname,
+                        repopath,
+                    )
+                    continue
 
             # Find config
             confpath = os.path.join(repopath, confdir)

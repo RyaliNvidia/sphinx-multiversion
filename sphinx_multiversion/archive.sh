@@ -21,10 +21,10 @@ export TOP_FILE
 export TARGET_COMMIT
 
 git submodule foreach --recursive '
-  SUB_PREFIX="$TOP_PREFIX/$displaypath/"
+  SUB_PREFIX="$displaypath/"
   SUB_FILE="$(basename $(git rev-parse --show-toplevel))-$TARGET_COMMIT.tar"
   git archive --format=tar --prefix="$SUB_PREFIX" --output="$SUB_FILE" HEAD
-  tar --concatenate --file="$TOP_FILE" "$SUB_FILE"
+  tar --concatenate --file="../$TOP_FILE" "$SUB_FILE"
   rm "$SUB_FILE"
 '
 

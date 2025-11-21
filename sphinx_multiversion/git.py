@@ -208,7 +208,7 @@ def copy_tree(gitroot, src, dst, reference, sourcepath="."):
             "bash",
             "archive.sh",
             reference.commit,
-            fp,
+            fp.name,
         )
         script_dir = os.path.dirname(os.path.abspath(__file__))
         subprocess.check_call(cmd, cwd=script_dir)

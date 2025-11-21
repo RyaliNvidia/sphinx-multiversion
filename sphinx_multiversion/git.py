@@ -204,6 +204,7 @@ def copy_tree(gitroot, src, dst, reference, sourcepath="."):
         #     "--",
         #     sourcepath,
         # )
+        script_dir = os.path.dirname(os.path.abspath(__file__))
         cmd = (
             "bash",
             f"{script_dir}/archive.sh",

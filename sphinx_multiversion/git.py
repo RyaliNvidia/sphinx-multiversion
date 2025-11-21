@@ -206,12 +206,11 @@ def copy_tree(gitroot, src, dst, reference, sourcepath="."):
         # )
         cmd = (
             "bash",
-            "archive.sh",
+            f"{script_dir}/archive.sh",
             reference.commit,
             fp.name,
         )
-        script_dir = os.path.dirname(os.path.abspath(__file__))
-        subprocess.check_call(cmd, cwd=script_dir)
+        subprocess.check_call(cmd, cwd=gitroot)
         fp.seek(0)
         with tarfile.TarFile(fileobj=fp) as tarfp:
             # This should be safe, but still causes a warning with medium

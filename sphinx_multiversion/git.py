@@ -194,7 +194,7 @@ def no_fs_traversal(member: tarfile.TarInfo):
 
 
 def copy_tree(gitroot, src, dst, reference, sourcepath="."):
-    with tempfile.SpooledTemporaryFile() as fp:
+    with tempfile.NamedTemporaryFile() as fp:
         # cmd = (
         #     "git",
         #     "archive",

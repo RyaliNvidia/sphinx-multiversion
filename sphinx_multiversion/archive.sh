@@ -14,7 +14,7 @@ git checkout "$TARGET_COMMIT"
 git submodule update --init --recursive
 
 # Archive the main repo at the desired commit
-git archive --output="$TOP_FILE" "$TARGET_COMMIT"
+git archive --format=tar --output="$TOP_FILE" "$TARGET_COMMIT"
 
 export TOP_PREFIX
 export TOP_FILE
@@ -23,12 +23,10 @@ export TARGET_COMMIT
 git submodule foreach --recursive '
   SUB_PREFIX="$TOP_PREFIX/$displaypath/"
   SUB_FILE="$(basename $(git rev-parse --show-toplevel))-$TARGET_COMMIT.tar"
-  git archive --prefix="$SUB_PREFIX" --output="$SUB_FILE" HEAD
+  git archive --format=tar --prefix="$SUB_PREFIX" --output="$SUB_FILE" HEAD
   tar --concatenate --file="$TOP_FILE" "$SUB_FILE"
   rm "$SUB_FILE"
 '
-
-gzip --best --verbose "$TOP_FILE"
 
 # Return to the original commit
 git checkout "$ORIGINAL_COMMIT"

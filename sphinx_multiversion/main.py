@@ -187,6 +187,11 @@ def main(argv=None):
         help="dump generated metadata and exit",
     )
     parser.add_argument(
+        "--run-markdown-build",
+        action="store_true",
+        help="run markdown build for each version",
+    )
+    parser.add_argument(
         "--pre-eval-script",
         dest="pre_eval_script",
         help="optional bash script to run per git ref before file existence evaluation",
@@ -395,31 +400,32 @@ def main(argv=None):
             )
             subprocess.check_call(cmd, cwd=current_cwd, env=env)
 
-            # Generate Markdown files
-            current_argv = argv.copy()
-            current_argv.extend(
-                [
-                    *defines,
-                    "-D",
-                    "smv_current_version={}".format(version_name),
-                    "-c",
-                    confdir_absolute,
-                    "-b",
-                    "markdown",
-                    data["sourcedir"],
-                    data["outputdir"],
-                    *args.filenames,
-                ]
-            )
-            logger.debug("Running sphinx-build with args: %r", current_argv)
-            cmd = (
-                sys.executable,
-                *get_python_flags(),
-                "-m",
-                "sphinx",
-                *current_argv,
-            )
-            current_cwd = os.path.join(data["basedir"], cwd_relative)
-            subprocess.check_call(cmd, cwd=current_cwd)
+            if args.run_markdown_build:
+                # Generate Markdown files
+                current_argv = argv.copy()
+                current_argv.extend(
+                    [
+                        *defines,
+                        "-D",
+                        "smv_current_version={}".format(version_name),
+                        "-c",
+                        confdir_absolute,
+                        "-b",
+                        "markdown",
+                        data["sourcedir"],
+                        data["outputdir"],
+                        *args.filenames,
+                    ]
+                )
+                logger.debug("Running sphinx-build with args: %r", current_argv)
+                cmd = (
+                    sys.executable,
+                    *get_python_flags(),
+                    "-m",
+                    "sphinx",
+                    *current_argv,
+                )
+                current_cwd = os.path.join(data["basedir"], cwd_relative)
+                subprocess.check_call(cmd, cwd=current_cwd)
 
     return 0

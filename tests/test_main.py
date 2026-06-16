@@ -73,8 +73,11 @@ class MainTestCase(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp_root:
             root = os.path.realpath(tmp_root)
             docs = os.path.join(root, "docs")
+            external = os.path.join(root, "external")
             output = os.path.join(root, "out")
             os.makedirs(docs)
+            os.makedirs(external)
+            pythonpath = os.pathsep.join([docs, external, "/outside"])
 
             base_config = types.SimpleNamespace(
                 release="",
@@ -114,6 +117,9 @@ class MainTestCase(unittest.TestCase):
                 mock.patch.object(
                     smv_main.subprocess, "check_call", side_effect=check_call
                 ),
+                mock.patch.dict(
+                    os.environ, {"PYTHONPATH": pythonpath}, clear=True
+                ),
             ):
                 rc = smv_main.main(
                     [
@@ -139,6 +145,18 @@ class MainTestCase(unittest.TestCase):
                 self.assertNotEqual(confdir, docs)
                 self.assertIn("custom=release/6.1", args)
                 self.assertEqual(env["SPHINX_MULTIVERSION_CONFDIR"], confdir)
+                pythonpath_entries = env["PYTHONPATH"].split(os.pathsep)
+                self.assertIn(
+                    os.path.join(os.path.dirname(confdir), "docs"),
+                    pythonpath_entries,
+                )
+                self.assertIn(
+                    os.path.join(os.path.dirname(confdir), "external"),
+                    pythonpath_entries,
+                )
+                self.assertIn("/outside", pythonpath_entries)
+                self.assertNotIn(docs, pythonpath_entries)
+                self.assertNotIn(external, pythonpath_entries)
 
 
 if __name__ == "__main__":

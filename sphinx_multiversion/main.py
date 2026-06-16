@@ -145,6 +145,38 @@ def get_python_flags():
             yield from ("-X", "{}={}".format(option, value))
 
 
+def remap_pythonpath(pythonpath, gitroot, repopath):
+    if not pythonpath:
+        return pythonpath
+
+    gitroot = os.path.realpath(os.fspath(gitroot))
+    entries = []
+    for entry in pythonpath.split(os.pathsep):
+        if not entry or not os.path.isabs(entry):
+            entries.append(entry)
+            continue
+
+        entry_path = os.path.realpath(entry)
+        try:
+            is_repo_path = os.path.commonpath([gitroot, entry_path]) == gitroot
+        except ValueError:
+            is_repo_path = False
+
+        if is_repo_path:
+            entries.append(
+                os.path.normpath(
+                    os.path.join(
+                        repopath,
+                        os.path.relpath(entry_path, gitroot),
+                    )
+                )
+            )
+        else:
+            entries.append(entry)
+
+    return os.pathsep.join(entries)
+
+
 def main(argv=None):
     if not argv:
         argv = sys.argv[1:]
@@ -386,6 +418,10 @@ def main(argv=None):
             )
             current_cwd = os.path.join(data["basedir"], cwd_relative)
             env = os.environ.copy()
+            if "PYTHONPATH" in env:
+                env["PYTHONPATH"] = remap_pythonpath(
+                    env["PYTHONPATH"], gitroot, data["basedir"]
+                )
             env.update(
                 {
                     "SPHINX_MULTIVERSION_NAME": data["name"],

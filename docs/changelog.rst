@@ -12,6 +12,8 @@ Version 0.2.7 (unreleased)
 
 * Use each version's own :file:`conf.py` when running the final Sphinx
   builds.
+* Remap repository-local :envvar:`PYTHONPATH` entries to each version's
+  checkout when running the final Sphinx builds.
 
 Version 0.2.5 (unreleased)
 --------------------------

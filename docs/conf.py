@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (c) 2025 Jan Holthuis <jan.holthuis@rub.de>
+# Copyright (c) 2026 Jan Holthuis <jan.holthuis@rub.de>
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
@@ -31,7 +31,7 @@ import time
 
 author = "Jan Holthuis"
 project = "sphinx-multiversion"
-release = "0.2.5"
+release = "0.2.7"
 version = "0.2"
 copyright = "{}, {}".format(time.strftime("%Y"), author)
 

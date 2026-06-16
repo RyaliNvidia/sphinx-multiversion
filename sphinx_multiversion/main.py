@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (c) 2025 Jan Holthuis <jan.holthuis@rub.de>
+# Copyright (c) 2026 Jan Holthuis <jan.holthuis@rub.de>
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
@@ -25,7 +25,6 @@
 #
 # SPDX-License-Identifier: BSD-2-Clause
 
-import itertools
 import argparse
 import multiprocessing
 import contextlib
@@ -358,12 +357,11 @@ def main(argv=None):
         for version_name, data in metadata.items():
             os.makedirs(data["outputdir"], exist_ok=True)
 
-            defines = itertools.chain(
-                *(
-                    ("-D", string.Template(d).safe_substitute(data))
-                    for d in args.define
-                )
-            )
+            defines = [
+                item
+                for d in args.define
+                for item in ("-D", string.Template(d).safe_substitute(data))
+            ]
 
             current_argv = argv.copy()
             current_argv.extend(
@@ -372,7 +370,7 @@ def main(argv=None):
                     "-D",
                     "smv_current_version={}".format(version_name),
                     "-c",
-                    confdir_absolute,
+                    data["confdir"],
                     data["sourcedir"],
                     data["outputdir"],
                     *args.filenames,
@@ -409,7 +407,7 @@ def main(argv=None):
                         "-D",
                         "smv_current_version={}".format(version_name),
                         "-c",
-                        confdir_absolute,
+                        data["confdir"],
                         "-b",
                         "markdown",
                         data["sourcedir"],
@@ -417,7 +415,9 @@ def main(argv=None):
                         *args.filenames,
                     ]
                 )
-                logger.debug("Running sphinx-build with args: %r", current_argv)
+                logger.debug(
+                    "Running sphinx-build with args: %r", current_argv
+                )
                 cmd = (
                     sys.executable,
                     *get_python_flags(),
@@ -426,6 +426,6 @@ def main(argv=None):
                     *current_argv,
                 )
                 current_cwd = os.path.join(data["basedir"], cwd_relative)
-                subprocess.check_call(cmd, cwd=current_cwd)
+                subprocess.check_call(cmd, cwd=current_cwd, env=env)
 
     return 0

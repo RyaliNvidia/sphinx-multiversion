@@ -21,18 +21,22 @@ It reads your Sphinx :file:`conf.py` file from the currently checked out Git bra
 This data is written to a JSON file - if you want to have a look what data will be generated, you can use the ``--dump-metadata`` flag.
 
 Then it copies the data for each version into separate temporary directories, builds the documentation from each of them and writes the output to the output directory.
-The :file:`conf.py` file from the currently checked out branch will be used to build old versions, so it's not necessary to make changes old branches or tags to add support for ``sphinx-multiversion``.
-This also means that theme improvements, template changes, etc. will automatically be applied to old versions without needing to add commits.
+Each version is built with the :file:`conf.py` file from that version's
+temporary checkout.
+The currently checked out branch still controls which refs are selected and
+which initial ``sphinx-multiversion`` settings are used.
 
 
 Do I need to make changes to old branches or tags?
 ==================================================
 
-No, you don't. ``sphinx-multiversion`` will always use the :file:`conf.py` file from your currently checked out branch.
+Yes. Each branch or tag must contain a :file:`conf.py` file that can build
+that version's documentation with your installed dependencies.
 
-The downside is that this behaviour restricts the kinds of changes you may do to your configuration, because it needs to retain compatibility with old branches.
-For example, if your :file:`conf.py` file hardcodes a path (e.g. for opening a file), but that file does not exist in some older branches that you want to build documentation for, this will cause issues.
-In these cases you will need to add a check if a file actually exists and adapt the path accordingly.
+This lets branches evolve their documentation configuration independently.
+The tradeoff is that old branches may need small compatibility fixes if their
+:file:`conf.py` files no longer work with your current documentation
+dependencies.
 
 
 What are the license terms of ``sphinx-multiversion``?

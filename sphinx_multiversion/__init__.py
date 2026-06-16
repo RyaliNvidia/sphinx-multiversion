@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (c) 2025 Jan Holthuis <jan.holthuis@rub.de>
+# Copyright (c) 2026 Jan Holthuis <jan.holthuis@rub.de>
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
@@ -28,7 +28,7 @@
 from .sphinx import setup
 from .main import main
 
-__version__ = "0.2.5"
+__version__ = "0.2.7"
 
 __all__ = [
     "setup",

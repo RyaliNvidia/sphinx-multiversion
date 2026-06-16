@@ -7,6 +7,12 @@ Changelog
 Version 0.2
 ===========
 
+Version 0.2.7 (unreleased)
+--------------------------
+
+* Use each version's own :file:`conf.py` when running the final Sphinx
+  builds.
+
 Version 0.2.5 (unreleased)
 --------------------------
 

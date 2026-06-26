@@ -426,6 +426,6 @@ def main(argv=None):
                     *current_argv,
                 )
                 current_cwd = os.path.join(data["basedir"], cwd_relative)
-                subprocess.check_call(cmd, cwd=current_cwd)
+                subprocess.check_call(cmd, cwd=current_cwd, env=env)
 
     return 0
